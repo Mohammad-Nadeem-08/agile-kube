@@ -3,33 +3,27 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
-            steps {
-                echo 'Cloning...'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-app .'
+                sh 'docker build -t mdnadeem08/my-app .'
             }
         }
 
-        stage('Tag Image') {
+        stage('Docker Login') {
             steps {
-                sh 'docker tag my-app yourusername/my-app'
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-cred',
+                    usernameVariable: 'USERNAME',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh 'echo $PASSWORD | docker login -u $USERNAME --password-stdin'
+                }
             }
         }
 
-        stage('Push to DockerHub') {
+        stage('Push Docker Image') {
             steps {
-                sh 'docker push yourusername/my-app'
-            }
-        }
-
-        stage('Run Container') {
-            steps {
-                sh 'docker run -d -p 8082:80 my-app'
+                sh 'docker push mdnadeem08/my-app'
             }
         }
     }

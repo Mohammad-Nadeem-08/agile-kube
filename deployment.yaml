@@ -18,6 +18,6 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: yourusername/my-app
+        image: mdnadeem08/my-app
         ports:
         - containerPort: 80
